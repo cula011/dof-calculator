@@ -409,6 +409,7 @@
 				FD6483751842F7A5004DAB58 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		FD6483761842F7A5004DAB58 /* Build configuration list for PBXNativeTarget "DOFCalculatorTests" */ = {
 			isa = XCConfigurationList;
@@ -417,6 +418,7 @@
 				FD6483781842F7A5004DAB58 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
