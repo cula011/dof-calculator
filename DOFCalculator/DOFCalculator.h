@@ -10,6 +10,18 @@
 
 @interface DOFCalculator : NSObject
 
+typedef NS_ENUM(NSInteger, FNumber) {
+    One_Point_Four,
+    Two,
+    Two_Point_Eight,
+    Four,
+    Five_Point_Six,
+    Eight,
+    Eleven,
+    Sixteen,
+    TwentyTwo
+};
+
 // (http://www.dofmaster.com/equations.html)
 // where:
 // H is the hyperfocal distance, mm
@@ -21,12 +33,19 @@
 // c is the circle of confusion, mm
 
 // H = (f * f) / (N * c) + f
--(double) calculateHyperfocalDistanceForFocalLength: (double)fl fStop:(NSString *)f imageFormat: (NSString *)imageFormat;
+-(double) calculateHyperfocalDistanceForFocalLength: (double)fl fStop:(FNumber)f imageFormat: (NSString *)imageFormat;
 
 // Dn = (s * (H - f)) / (H + s - 2 * f)
 -(double) calculateNearDistanceForFocusDistance: (double)fs hyperfocalDistance: (double)hd focalLength: (double)fl;
 
 // Df = (s * (H -f)) / (H - s)
 -(double) calculateFarDistanceForFocusDistance: (double)fs hyperfocalDistance: (double)hd focalLength: (double)fl;
+
+// TODO:
+// totalDepthOfField
+
+-(double) calculateDistanceInFrontOfSubjectForFocusDistance: (double) fd nearDistance: (double) nd;
+
+-(double) calculateDistanceBehindSubjectForFocusDistance: (double) fod farDistance: (double) fad;
 
 @end

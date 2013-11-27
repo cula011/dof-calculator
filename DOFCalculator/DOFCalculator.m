@@ -33,24 +33,24 @@
     if (aperture == nil)
     {
         aperture = [NSDictionary dictionaryWithObjectsAndKeys:
-                    [NSNumber numberWithDouble:1], @"1.4",
-                    [NSNumber numberWithDouble:2], @"2",
-                    [NSNumber numberWithDouble:3], @"2.8",
-                    [NSNumber numberWithDouble:4], @"4",
-                    [NSNumber numberWithDouble:5], @"5.6",
-                    [NSNumber numberWithDouble:6], @"8",
-                    [NSNumber numberWithDouble:7], @"11",
-                    [NSNumber numberWithDouble:8], @"16",
-                    [NSNumber numberWithDouble:9], @"22",
+                    [NSNumber numberWithDouble:1], [NSNumber numberWithInteger:One_Point_Four],
+                    [NSNumber numberWithDouble:2], [NSNumber numberWithInteger:Two],
+                    [NSNumber numberWithDouble:3], [NSNumber numberWithInteger:Two_Point_Eight],
+                    [NSNumber numberWithDouble:4], [NSNumber numberWithInteger:Four],
+                    [NSNumber numberWithDouble:5], [NSNumber numberWithInteger:Five_Point_Six],
+                    [NSNumber numberWithDouble:6], [NSNumber numberWithInteger:Eight],
+                    [NSNumber numberWithDouble:7], [NSNumber numberWithInteger:Eleven],
+                    [NSNumber numberWithDouble:8], [NSNumber numberWithInteger:Sixteen],
+                    [NSNumber numberWithDouble:9], [NSNumber numberWithInteger:TwentyTwo],
                     nil];
     }
     return aperture;
 }
 
 // assuming the input is received in mililmeters, return the hyperfocal distance in meters
--(double) calculateHyperfocalDistanceForFocalLength: (double) fl fStop:(NSString *) f imageFormat: (NSString *) imageFormat;
+-(double) calculateHyperfocalDistanceForFocalLength: (double) fl fStop:(FNumber) f imageFormat: (NSString *) imageFormat;
 {
-    NSNumber *apertureValue = [[DOFCalculator aperture] valueForKey:f];
+    NSNumber *apertureValue = [[DOFCalculator aperture] objectForKey:[NSNumber numberWithInteger:f]];
     double fnumber = pow(2, [apertureValue doubleValue] / 2);
     NSNumber *cocValue = [[DOFCalculator coc] valueForKey:imageFormat];
     double hd = (fl * fl) / (fnumber * [cocValue doubleValue]) + fl;
@@ -68,5 +68,16 @@
     double dr = (fd*1000 * (hd*1000 - fl)) / (hd*1000 - fd*1000);
     return dr/1000;
 }
+
+-(double) calculateDistanceInFrontOfSubjectForFocusDistance: (double) fd nearDistance: (double) nd
+{
+    return fd - nd;
+}
+
+-(double) calculateDistanceBehindSubjectForFocusDistance: (double) fod farDistance: (double) fad
+{
+    return fad - fod;
+}
+
 
 @end
