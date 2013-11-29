@@ -11,6 +11,7 @@
 @implementation DOFCalculator
 
 // circle of confusion to image sensor size mapping
+// http://en.wikipedia.org/wiki/Circle_of_confusion#Circle_of_confusion_diameter_limit_based_on_d.2F1500
 +(NSDictionary*) coc
 {
     static NSDictionary *coc = nil;
@@ -18,7 +19,7 @@
     if (coc == nil)
     {
         coc = [NSDictionary dictionaryWithObjectsAndKeys:
-               [NSNumber numberWithDouble:0.030], @"Full Frame",
+               [NSNumber numberWithDouble:0.030], [NSNumber numberWithInteger: Full_Frame],
                nil];
     }
     return coc;
@@ -47,37 +48,40 @@
     return aperture;
 }
 
-// assuming the input is received in mililmeters, return the hyperfocal distance in meters
--(double) calculateHyperfocalDistanceForFocalLength: (double) fl fStop:(FNumber) f imageFormat: (NSString *) imageFormat;
+-(double)hyperfocalDistanceForFocalLength:(double)fl fStop:(FNumber)f imageFormat: (ImageFormat) imageFormat;
 {
     NSNumber *apertureValue = [[DOFCalculator aperture] objectForKey:[NSNumber numberWithInteger:f]];
     double fnumber = pow(2, [apertureValue doubleValue] / 2);
-    NSNumber *cocValue = [[DOFCalculator coc] valueForKey:imageFormat];
+    NSNumber *cocValue = [[DOFCalculator coc] objectForKey:[NSNumber numberWithInteger:imageFormat]];
     double hd = (fl * fl) / (fnumber * [cocValue doubleValue]) + fl;
     return hd/1000;
 }
 
--(double) calculateNearDistanceForFocusDistance: (double) fd hyperfocalDistance: (double) hd focalLength: (double) fl
+-(double)nearDistanceForFocusDistance:(double)fd hyperfocalDistance:(double)hd focalLength: (double) fl
 {
     double dn = (fd*1000 * (hd*1000 - fl)) / (hd*1000 + fd*1000 - 2 * fl);
     return dn/1000;
 }
 
--(double) calculateFarDistanceForFocusDistance: (double) fd hyperfocalDistance: (double) hd focalLength: (double) fl
+-(double)farDistanceForFocusDistance:(double)fd hyperfocalDistance:(double)hd focalLength: (double) fl
 {
     double dr = (fd*1000 * (hd*1000 - fl)) / (hd*1000 - fd*1000);
     return dr/1000;
 }
 
--(double) calculateDistanceInFrontOfSubjectForFocusDistance: (double) fd nearDistance: (double) nd
+-(double)distanceInFrontOfSubjectForFocusDistance:(double)focus nearDistance: (double) near
 {
-    return fd - nd;
+    return focus - near;
 }
 
--(double) calculateDistanceBehindSubjectForFocusDistance: (double) fod farDistance: (double) fad
+-(double)distanceBehindSubjectForFocusDistance:(double)focus farDistance: (double) far
 {
-    return fad - fod;
+    return far - focus;
 }
 
+- (double)totalDepthOfFieldForFarDistance:(double)far nearDistance: (double)near
+{
+    return far - near;
+}
 
 @end

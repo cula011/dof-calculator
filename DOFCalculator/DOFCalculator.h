@@ -10,6 +10,10 @@
 
 @interface DOFCalculator : NSObject
 
+typedef NS_ENUM(NSInteger, ImageFormat) {
+    Full_Frame
+};
+
 typedef NS_ENUM(NSInteger, FNumber) {
     One_Point_Four,
     Two,
@@ -22,30 +26,17 @@ typedef NS_ENUM(NSInteger, FNumber) {
     TwentyTwo
 };
 
-// (http://www.dofmaster.com/equations.html)
-// where:
-// H is the hyperfocal distance, mm
-// f is the lens focal length, mm (f-number is calculated by the definition N = 2^i/2, where i = 1, 2, 3,... for f/1.4, f/2, f/2.8,...)
-// s is the focus distance
-// Dn is the near distance for acceptable sharpness
-// Df is the far distance for acceptable sharpness
-// N is the f-number
-// c is the circle of confusion, mm
+// assuming the focal length is provided in millimeters, return the hyperfocal distance in meters
+-(double)hyperfocalDistanceForFocalLength:(double)fl fStop:(FNumber)f imageFormat:(ImageFormat)imageFormat;
 
-// H = (f * f) / (N * c) + f
--(double) calculateHyperfocalDistanceForFocalLength: (double)fl fStop:(FNumber)f imageFormat: (NSString *)imageFormat;
+-(double)nearDistanceForFocusDistance:(double)fs hyperfocalDistance:(double)hd focalLength:(double)fl;
 
-// Dn = (s * (H - f)) / (H + s - 2 * f)
--(double) calculateNearDistanceForFocusDistance: (double)fs hyperfocalDistance: (double)hd focalLength: (double)fl;
+-(double)farDistanceForFocusDistance:(double)fs hyperfocalDistance:(double)hd focalLength:(double)fl;
 
-// Df = (s * (H -f)) / (H - s)
--(double) calculateFarDistanceForFocusDistance: (double)fs hyperfocalDistance: (double)hd focalLength: (double)fl;
+-(double)distanceInFrontOfSubjectForFocusDistance:(double)focus nearDistance:(double)near;
 
-// TODO:
-// totalDepthOfField
+-(double)distanceBehindSubjectForFocusDistance:(double)focus farDistance:(double)far;
 
--(double) calculateDistanceInFrontOfSubjectForFocusDistance: (double) fd nearDistance: (double) nd;
-
--(double) calculateDistanceBehindSubjectForFocusDistance: (double) fod farDistance: (double) fad;
+-(double)totalDepthOfFieldForFarDistance:(double)far nearDistance: (double)near;
 
 @end
